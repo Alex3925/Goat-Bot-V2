@@ -1,34 +1,53 @@
-/* 
-API BY DEKU
-contact: https://facebook.com/joshg101
-*/
-const {get} = require('axios');
-const url = "http://eu4.diresnode.com:3301"; //available model: baymax_gpt, gojo_gpt
 module.exports = {
-    config: {
-        name: "ai", //rename it if u want
-        hasPermssion: 0,
-        version: "1.0.0",
-        commandCategory: "AI",
-        credits: "Deku",
-        cooldowns: 0,
-        usages: "[ask]/clear to clear history",
-        usePrefix: false, 
-        description: "Talk to BAYMAX 1.2 (with continues conversation)"
-    },
-    run: async function({api, event, args}){
-            let prompt = args.join(' '), id = event.senderID;
-             function r(msg){
-                 api.sendMessage(msg, event.threadID, event.messageID)
-             }
-             
-            if(!prompt) return r("Missing input!\n\nIf you want to reset the conversation with "+this.config.name+" you can use “"+this.config.name+" clear”");
-            r("🔍…");
-            try {
-                const res = await get(url+"/baymax_gpt?prompt="+prompt+"&idd="+id);
-                return r(res.data.baymax);
-            } catch (e){
-                return r(e.message)
-            }
-    }
-}
+	config: {
+		name: "ai",
+		version: "1.0.0",
+		author: "Developer",
+		role: 0,
+		description: {
+			vi: "An AI command powered by GPT-4",
+			en: "An AI command powered by GPT-4"
+		},
+		countDown: 3,
+		hasPrefix: false,
+		category: "ai",
+		guide: {
+			vi: "Ai [promot]",
+			en: "Ai [promot]"
+		}
+	},
+	langs: {
+		vi: {
+			$12: "// Your Vietnamese translation here"
+		},
+		en: {
+			$13: "// Your English translation here"
+		}
+	},
+	onStart: async function ({ api, event, args }) {
+		const axios = require("axios");
+		const input = args.join(" ");
+		if (!input) {
+			api.sendMessage(
+				`Please provide a question or statement after 'ai'. For example: 'ai What is the capital of France?'`,
+				event.threadID,
+				event.messageID
+			);
+			return;
+		}
+		api.sendMessage(`Pls Wait...🔍 "${input}"`, event.threadID, event.messageID);
+		try {
+			const { data } = await axios.get(
+				`https://soyeon-gpt4.onrender.com/api?prompt=${encodeURIComponent(input)}`
+			);
+			const response = data.response;
+			api.sendMessage(response, event.threadID, event.messageID);
+		} catch (error) {
+			api.sendMessage(
+				"An error occurred while processing your request.",
+				event.threadID,
+				event.messageID
+			);
+		}
+	},
+};
