@@ -4,7 +4,7 @@ const cookie = '74PDgThMSgpNONQg/A18L9KMpjL1uKyAzu';
 
 module.exports = {
   config: {
-    name: "gemini",
+    name: "ai",
     version: "1.0",
     author: "rehat--",
     countDown: 5,
