@@ -1,10 +1,10 @@
 const axios = require("axios");
 const fs = require("fs");
-const cookie = 'enter your gemini cookie or gemini advance cookie both supported';
+const cookie = 'g.a000jAiTJOlfCg8Zh0hMjcH0_SwLRpbf9VUQskIpXMEtaBwdfq-O0iTKOSpj7DNL1zCLJ_3YkAACgYKATgSAQASFQHGX2MimEQ2KuUX8Tubz9MHIclxExoVAUF8yKrAiZcNqmxAbXKcAB8VIbWV0076';
 
 module.exports = {
   config: {
-    name: "ai",
+    name: "gemini",
     version: "1.0",
     author: "rehat--",
     countDown: 5,
@@ -28,12 +28,12 @@ module.exports = {
 
     if (prompt.toLowerCase() === "clear") {
       this.clearHistory();
-      const clear = await axios.get(`https://rehatdesu.xyz/api/llm/gemini?query=clear&uid=${uid}&cookie=${g.a000jAiTJOlfCg8Zh0hMjcH0_SwLRpbf9VUQskIpXMEtaBwdfq-O0iTKOSpj7DNL1zCLJ_3YkAACgYKATgSAQASFQHGX2MimEQ2KuUX8Tubz9MHIclxExoVAUF8yKrAiZcNqmxAbXKcAB8VIbWV0076}`);
+      const clear = await axios.get(`https://rehatdesu.xyz/api/llm/gemini?query=clear&uid=${uid}&cookie=${cookie}`);
       message.reply(clear.data.message);
       return;
     }
 
-    let apiUrl = `https://rehatdesu.xyz/api/llm/gemini?query=${encodeURIComponent(prompt)}&uid=${uid}&cookie=${g.a000jAiTJOlfCg8Zh0hMjcH0_SwLRpbf9VUQskIpXMEtaBwdfq-O0iTKOSpj7DNL1zCLJ_3YkAACgYKATgSAQASFQHGX2MimEQ2KuUX8Tubz9MHIclxExoVAUF8yKrAiZcNqmxAbXKcAB8VIbWV0076}`;
+    let apiUrl = `https://rehatdesu.xyz/api/llm/gemini?query=${encodeURIComponent(prompt)}&uid=${uid}&cookie=${cookie}`;
 
     if (event.type === "message_reply") {
       const imageUrl = event.messageReply.attachments[0]?.url;
@@ -100,7 +100,7 @@ module.exports = {
     if (event.senderID !== author) return;
 
     try {
-      const apiUrl = `https://rehatdesu.xyz/api/llm/gemini?query=${encodeURIComponent(prompt)}&uid=${author}&cookie=${g.a000jAiTJOlfCg8Zh0hMjcH0_SwLRpbf9VUQskIpXMEtaBwdfq-O0iTKOSpj7DNL1zCLJ_3YkAACgYKATgSAQASFQHGX2MimEQ2KuUX8Tubz9MHIclxExoVAUF8yKrAiZcNqmxAbXKcAB8VIbWV0076}`;
+      const apiUrl = `https://rehatdesu.xyz/api/llm/gemini?query=${encodeURIComponent(prompt)}&uid=${author}&cookie=${cookie}`;
       const response = await axios.get(apiUrl);
 
       let content = response.data.message;
