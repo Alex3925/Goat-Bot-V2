@@ -1,149 +1,49 @@
-const axios = require("axios");
-const fs = require("fs");
-const cookie = '74PDgThMSgpNONQg/A18L9KMpjL1uKyAzu';
-
 module.exports = {
-  config: {
-    name: "ai",
-    version: "1.0",
-    author: "rehat--",
-    countDown: 5,
-    role: 0,
-    longDescription: { en: "Artificial Intelligence Google Gemini" },
-    guide: { en: "{pn} <query>" },
-    category: "ai",
-  },
-  clearHistory: function () {
-    global.GoatBot.onReply.clear();
-  },
-
-  onStart: async function ({ message, event, args, commandName }) {
-    const uid = event.senderID;
-    const prompt = args.join(" ");
-
-    if (!prompt) {
-      message.reply("Please enter a query.");
-      return;
-    }
-
-    if (prompt.toLowerCase() === "clear") {
-      this.clearHistory();
-      const clear = await axios.get(`https://rehatdesu.xyz/api/llm/gemini?query=clear&uid=${uid}&cookie=${cookie}`);
-      message.reply(clear.data.message);
-      return;
-    }
-
-    let apiUrl = `https://rehatdesu.xyz/api/llm/gemini?query=${encodeURIComponent(prompt)}&uid=${uid}&cookie=${cookie}`;
-
-    if (event.type === "message_reply") {
-      const imageUrl = event.messageReply.attachments[0]?.url;
-      if (imageUrl) {
-        apiUrl += `&attachment=${encodeURIComponent(imageUrl)}`;
-      }
-    }
-
-    try {
-      const response = await axios.get(apiUrl);
-      const result = response.data;
-
-      let content = result.message;
-      let imageUrls = result.imageUrls;
-
-      let replyOptions = {
-        body: content,
-      };
-
-      if (Array.isArray(imageUrls) && imageUrls.length > 0) {
-        const imageStreams = [];
-
-        if (!fs.existsSync(`${__dirname}/cache`)) {
-          fs.mkdirSync(`${__dirname}/cache`);
-        }
-
-        for (let i = 0; i < imageUrls.length; i++) {
-          const imageUrl = imageUrls[i];
-          const imagePath = `${__dirname}/cache/image` + (i + 1) + ".png";
-
-          try {
-            const imageResponse = await axios.get(imageUrl, {
-              responseType: "arraybuffer",
-            });
-            fs.writeFileSync(imagePath, imageResponse.data);
-            imageStreams.push(fs.createReadStream(imagePath));
-          } catch (error) {
-            console.error("Error occurred while downloading and saving the image:", error);
-            message.reply('An error occurred.');
-          }
-        }
-
-        replyOptions.attachment = imageStreams;
-      }
-
-      message.reply(replyOptions, (err, info) => {
-        if (!err) {
-          global.GoatBot.onReply.set(info.messageID, {
-            commandName,
-            messageID: info.messageID,
-            author: event.senderID,
-          });
-        }
-      });
-    } catch (error) {
-      message.reply('An error occurred.');
-      console.error(error.message);
-    }
-  },
-
-  onReply: async function ({ message, event, Reply, args }) {
-    const prompt = args.join(" ");
-    let { author, commandName, messageID } = Reply;
-    if (event.senderID !== author) return;
-
-    try {
-      const apiUrl = `https://rehatdesu.xyz/api/llm/gemini?query=${encodeURIComponent(prompt)}&uid=${author}&cookie=${cookie}`;
-      const response = await axios.get(apiUrl);
-
-      let content = response.data.message;
-      let replyOptions = {
-        body: content,
-      };
-
-      const imageUrls = response.data.imageUrls;
-      if (Array.isArray(imageUrls) && imageUrls.length > 0) {
-        const imageStreams = [];
-
-        if (!fs.existsSync(`${__dirname}/cache`)) {
-          fs.mkdirSync(`${__dirname}/cache`);
-        }
-        for (let i = 0; i < imageUrls.length; i++) {
-          const imageUrl = imageUrls[i];
-          const imagePath = `${__dirname}/cache/image` + (i + 1) + ".png";
-
-          try {
-            const imageResponse = await axios.get(imageUrl, {
-              responseType: "arraybuffer",
-            });
-            fs.writeFileSync(imagePath, imageResponse.data);
-            imageStreams.push(fs.createReadStream(imagePath));
-          } catch (error) {
-            console.error("Error occurred while downloading and saving the image:", error);
-            message.reply('An error occurred.');
-          }
-        }
-        replyOptions.attachment = imageStreams;
-      }
-      message.reply(replyOptions, (err, info) => {
-        if (!err) {
-          global.GoatBot.onReply.set(info.messageID, {
-            commandName,
-            messageID: info.messageID,
-            author: event.senderID,
-          });
-        }
-      });
-    } catch (error) {
-      console.error(error.message);
-      message.reply("An error occurred.");
-    }
-  },
+	config: {
+		name: "gemini",
+		version: "5.6.7",
+		author: "Deku(converted by XyryllPanget)",
+		role: 0,
+		description: {
+			vi: "can describe picture",
+			en: "can describe picture"
+		},
+		countDown: 5,
+		role: 0,
+		category: "gemini",
+		guide: {
+			vi: "gemini [picture-url]",
+			en: "gemini [picture-url]"
+		}
+	},
+	langs: {
+		vi: {
+			$12: "// Your Vietnamese translation here"
+		},
+		en: {
+			$13: "// Your English translation here"
+		}
+	},
+	onStart: async function ({ api, event, args, threadsData, usersData }) {
+		const axios = require("axios");
+		let uid = event.senderID,
+			url;
+		if (event.type == "message_reply") {
+			if (event.messageReply.attachments[0]?.type == "photo") {
+				url = encodeURIComponent(event.messageReply.attachments[0].url);
+				api.sendTypingIndicator(event.threadID);
+				try {
+					const response = (await axios.get(`https://deku-rest-api.replit.app/gemini?prompt=describe%20this%20photo&url=${url}&uid=${uid}`)).data;
+					return api.sendMessage(response.gemini, event.threadID);
+				} catch (error) {
+					console.error(error);
+					return api.sendMessage('❌ | An error occurred. You can try typing your query again or resending it. There might be an issue with the server that\'s causing the problem, and it might resolve on retrying.', event.threadID);
+				}
+			} else {
+				return api.sendMessage('Please reply to an image.', event.threadID);
+			}
+		} else {
+			return api.sendMessage(`Please enter a picture URL or reply to an image with "gemini answer this".`, event.threadID);
+		}
+	}
 };
