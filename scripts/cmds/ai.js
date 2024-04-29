@@ -1,6 +1,6 @@
 const axios = require("axios");
 const fs = require("fs");
-const cookie = 'g.a000jAiTJOlfCg8Zh0hMjcH0_SwLRpbf9VUQskIpXMEtaBwdfq-O0iTKOSpj7DNL1zCLJ_3YkAACgYKATgSAQASFQHGX2MimEQ2KuUX8Tubz9MHIclxExoVAUF8yKrAiZcNqmxAbXKcAB8VIbWV0076';
+const cookie = '74PDgThMSgpNONQg/A18L9KMpjL1uKyAzu';
 
 module.exports = {
   config: {
