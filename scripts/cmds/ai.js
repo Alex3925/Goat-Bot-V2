@@ -1,50 +1,149 @@
 const axios = require("axios");
-const fs = require("fs-extra");
-const path = require("path");
-const KievRPSSecAuth = "";
-const _U = "";
+const fs = require("fs");
+const cookie = 'enter your gemini cookie or gemini advance cookie both supported';
 
 module.exports = {
   config: {
     name: "ai",
-    version: "1.0.2",
-    author: "Samir Œ ",
-    role: 0,
+    version: "1.0",
+    author: "rehat--",
     countDown: 5,
-    shortDescription: { en: "dalle3 image generator" },
-    longDescription: { en: "dalle3 is a image generator powdered by OpenAi" },
-    category: "𝗔𝗜",
-    guide: { en: "{prefix}dalle <search query>" }
+    role: 0,
+    longDescription: { en: "Artificial Intelligence Google Gemini" },
+    guide: { en: "{pn} <query>" },
+    category: "ai",
+  },
+  clearHistory: function () {
+    global.GoatBot.onReply.clear();
   },
 
-  onStart: async function ({ api, event, args }) {
+  onStart: async function ({ message, event, args, commandName }) {
+    const uid = event.senderID;
     const prompt = args.join(" ");
 
-    try {
-      const res = await axios.get(`https://apis-dalle-gen.onrender.com/dalle3?g.a000jAiTJOlfCg8Zh0hMjcH0_SwLRpbf9VUQskIpXMEtaBwdfq-O0iTKOSpj7DNL1zCLJ_3YkAACgYKATgSAQASFQHGX2MimEQ2KuUX8Tubz9MHIclxExoVAUF8yKrAiZcNqmxAbXKcAB8VIbWV0076_U=${_U}&g.a000jAiTJOlfCg8Zh0hMjcH0_SwLRpbf9VUQskIpXMEtaBwdfq-O0iTKOSpj7DNL1zCLJ_3YkAACgYKATgSAQASFQHGX2MimEQ2KuUX8Tubz9MHIclxExoVAUF8yKrAiZcNqmxAbXKcAB8VIbWV0076_KievRPSSecAuth=${KievRPSSecAuth}&prompt=${encodeURIComponent(prompt)}`);
-      const data = res.data.results.images;
-
-      if (!data || data.length === 0) {
-        api.sendMessage("response received but imgurl are missing ", event.threadID, event.messageID);
-        return;
-      }
-
-      const imgData = [];
-
-      for (let i = 0; i < Math.min(4, data.length); i++) {
-        const imgResponse = await axios.get(data[i].url, { responseType: 'arraybuffer' });
-        const imgPath = path.join(__dirname, 'cache', `${i + 1}.jpg`);
-        await fs.outputFile(imgPath, imgResponse.data);
-        imgData.push(fs.createReadStream(imgPath));
-      }
-
-      await api.sendMessage({
-        attachment: imgData,
-        body: `Here's your generated image`
-      }, event.threadID, event.messageID);
-
-    } catch (error) {
-      api.sendMessage("Can't Full Fill this request ", event.threadID, event.messageID);
+    if (!prompt) {
+      message.reply("Please enter a query.");
+      return;
     }
-  }
+
+    if (prompt.toLowerCase() === "clear") {
+      this.clearHistory();
+      const clear = await axios.get(`https://rehatdesu.xyz/api/llm/gemini?query=clear&uid=${uid}&cookie=${g.a000jAiTJOlfCg8Zh0hMjcH0_SwLRpbf9VUQskIpXMEtaBwdfq-O0iTKOSpj7DNL1zCLJ_3YkAACgYKATgSAQASFQHGX2MimEQ2KuUX8Tubz9MHIclxExoVAUF8yKrAiZcNqmxAbXKcAB8VIbWV0076}`);
+      message.reply(clear.data.message);
+      return;
+    }
+
+    let apiUrl = `https://rehatdesu.xyz/api/llm/gemini?query=${encodeURIComponent(prompt)}&uid=${uid}&cookie=${g.a000jAiTJOlfCg8Zh0hMjcH0_SwLRpbf9VUQskIpXMEtaBwdfq-O0iTKOSpj7DNL1zCLJ_3YkAACgYKATgSAQASFQHGX2MimEQ2KuUX8Tubz9MHIclxExoVAUF8yKrAiZcNqmxAbXKcAB8VIbWV0076}`;
+
+    if (event.type === "message_reply") {
+      const imageUrl = event.messageReply.attachments[0]?.url;
+      if (imageUrl) {
+        apiUrl += `&attachment=${encodeURIComponent(imageUrl)}`;
+      }
+    }
+
+    try {
+      const response = await axios.get(apiUrl);
+      const result = response.data;
+
+      let content = result.message;
+      let imageUrls = result.imageUrls;
+
+      let replyOptions = {
+        body: content,
+      };
+
+      if (Array.isArray(imageUrls) && imageUrls.length > 0) {
+        const imageStreams = [];
+
+        if (!fs.existsSync(`${__dirname}/cache`)) {
+          fs.mkdirSync(`${__dirname}/cache`);
+        }
+
+        for (let i = 0; i < imageUrls.length; i++) {
+          const imageUrl = imageUrls[i];
+          const imagePath = `${__dirname}/cache/image` + (i + 1) + ".png";
+
+          try {
+            const imageResponse = await axios.get(imageUrl, {
+              responseType: "arraybuffer",
+            });
+            fs.writeFileSync(imagePath, imageResponse.data);
+            imageStreams.push(fs.createReadStream(imagePath));
+          } catch (error) {
+            console.error("Error occurred while downloading and saving the image:", error);
+            message.reply('An error occurred.');
+          }
+        }
+
+        replyOptions.attachment = imageStreams;
+      }
+
+      message.reply(replyOptions, (err, info) => {
+        if (!err) {
+          global.GoatBot.onReply.set(info.messageID, {
+            commandName,
+            messageID: info.messageID,
+            author: event.senderID,
+          });
+        }
+      });
+    } catch (error) {
+      message.reply('An error occurred.');
+      console.error(error.message);
+    }
+  },
+
+  onReply: async function ({ message, event, Reply, args }) {
+    const prompt = args.join(" ");
+    let { author, commandName, messageID } = Reply;
+    if (event.senderID !== author) return;
+
+    try {
+      const apiUrl = `https://rehatdesu.xyz/api/llm/gemini?query=${encodeURIComponent(prompt)}&uid=${author}&cookie=${g.a000jAiTJOlfCg8Zh0hMjcH0_SwLRpbf9VUQskIpXMEtaBwdfq-O0iTKOSpj7DNL1zCLJ_3YkAACgYKATgSAQASFQHGX2MimEQ2KuUX8Tubz9MHIclxExoVAUF8yKrAiZcNqmxAbXKcAB8VIbWV0076}`;
+      const response = await axios.get(apiUrl);
+
+      let content = response.data.message;
+      let replyOptions = {
+        body: content,
+      };
+
+      const imageUrls = response.data.imageUrls;
+      if (Array.isArray(imageUrls) && imageUrls.length > 0) {
+        const imageStreams = [];
+
+        if (!fs.existsSync(`${__dirname}/cache`)) {
+          fs.mkdirSync(`${__dirname}/cache`);
+        }
+        for (let i = 0; i < imageUrls.length; i++) {
+          const imageUrl = imageUrls[i];
+          const imagePath = `${__dirname}/cache/image` + (i + 1) + ".png";
+
+          try {
+            const imageResponse = await axios.get(imageUrl, {
+              responseType: "arraybuffer",
+            });
+            fs.writeFileSync(imagePath, imageResponse.data);
+            imageStreams.push(fs.createReadStream(imagePath));
+          } catch (error) {
+            console.error("Error occurred while downloading and saving the image:", error);
+            message.reply('An error occurred.');
+          }
+        }
+        replyOptions.attachment = imageStreams;
+      }
+      message.reply(replyOptions, (err, info) => {
+        if (!err) {
+          global.GoatBot.onReply.set(info.messageID, {
+            commandName,
+            messageID: info.messageID,
+            author: event.senderID,
+          });
+        }
+      });
+    } catch (error) {
+      console.error(error.message);
+      message.reply("An error occurred.");
+    }
+  },
 };
