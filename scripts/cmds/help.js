@@ -3,7 +3,7 @@ const axios = require("axios");
 const path = require("path");
 const { getPrefix } = global.utils;
 const { commands, aliases } = global.GoatBot;
-const doNotDelete = "[ 🔥 | Uzuki Mikata V3]";
+const doNotDelete = "[ 💫 | ᘜᗩᒪᗩ᙭Y 𝗔𝗜 V3]";
 
 // Function to generate command details
 async function getCommandDetails(commandName, langCode) {
@@ -86,7 +86,7 @@ module.exports = {
         }
 
         // Add the header and footer
-        output = `╔═══════════╗\n     𝗨𝘇𝘂𝗸𝗶 𝗠𝗶𝗸𝗮𝘁𝗮 𝗩3\n╚═══════════╝\n${output}𝗧𝘆𝗽𝗲 $ 𝗵𝗲𝗹𝗽 𝗰𝗺𝗱𝗡𝗮𝗺𝗲 𝘁𝗼 𝘃𝗶𝗲𝘄 𝘁𝗵𝗲 𝗱𝗲𝘁𝗮𝗶𝗹𝘀 𝗼𝗳 𝘁𝗵𝗮𝘁 𝗰𝗼𝗺𝗺𝗮𝗻𝗱\nThank you for being with us for a year! Happy New Year Uzuki Mikata users!\n`;
+        output = `╔═══════════╗\n     𝗚𝗮𝗹𝗮𝘅𝘆 𝗔𝗜 𝗩3\n╚═══════════╝\n${output}𝗧𝘆𝗽𝗲 $ 𝗵𝗲𝗹𝗽 𝗰𝗺𝗱𝗡𝗮𝗺𝗲 𝘁𝗼 𝘃𝗶𝗲𝘄 𝘁𝗵𝗲 𝗱𝗲𝘁𝗮𝗶𝗹𝘀 𝗼𝗳 𝘁𝗵𝗮𝘁 𝗰𝗼𝗺𝗺𝗮𝗻𝗱\nThank you for supporting our new project! Have Fun Using Galaxy AI, Users!\n`;
 
         // Output or send the 'output' string as needed
         message.reply(output);
