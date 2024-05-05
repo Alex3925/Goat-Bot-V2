@@ -80,13 +80,13 @@ module.exports = {
         // Output the commands by category
         let output = '';
         for (const category in commandsByCategory) {
-            output += `╭───────────\n│ 『 ${category.toUpperCase()} 』\n`;
+            output += `╭───────────\n│ 『 /{category.toUpperCase()} 』\n`;
             output += `│ ${commandsByCategory[category].map(cmd => `• ${cmd}`).join('\n│ ')}\n`;
             output += `╰────────────\n`;
         }
 
         // Add the header and footer
-        output = `╔═══════════╗\n     𝗚𝗮𝗹𝗮𝘅𝘆 𝗔𝗜 𝗩3\n╚═══════════╝\n${output}𝗧𝘆𝗽𝗲 $ 𝗵𝗲𝗹𝗽 𝗰𝗺𝗱𝗡𝗮𝗺𝗲 𝘁𝗼 𝘃𝗶𝗲𝘄 𝘁𝗵𝗲 𝗱𝗲𝘁𝗮𝗶𝗹𝘀 𝗼𝗳 𝘁𝗵𝗮𝘁 𝗰𝗼𝗺𝗺𝗮𝗻𝗱\nThank you for supporting our new project! Have Fun Using Galaxy AI, Users!\n`;
+        output = `╔═══════════╗\n     𝗚𝗮𝗹𝗮𝘅𝘆 𝗔𝗜 𝗩3\n╚═══════════╝\n${output}𝗧𝘆𝗽𝗲 / 𝗵𝗲𝗹𝗽 𝗰𝗺𝗱𝗡𝗮𝗺𝗲 𝘁𝗼 𝘃𝗶𝗲𝘄 𝘁𝗵𝗲 𝗱𝗲𝘁𝗮𝗶𝗹𝘀 𝗼𝗳 𝘁𝗵𝗮𝘁 𝗰𝗼𝗺𝗺𝗮𝗻𝗱\nThank you for supporting our new project! Have Fun Using Galaxy AI, Users!\n`;
 
         // Output or send the 'output' string as needed
         message.reply(output);
