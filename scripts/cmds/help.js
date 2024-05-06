@@ -80,7 +80,7 @@ module.exports = {
         // Output the commands by category
         let output = '';
         for (const category in commandsByCategory) {
-            output += `╭───────────\n│ 『 /{category.toUpperCase()} 』\n`;
+            output += `╭───────────\n│ 『 ${category.toUpperCase()} 』\n`;
             output += `│ ${commandsByCategory[category].map(cmd => `• ${cmd}`).join('\n│ ')}\n`;
             output += `╰────────────\n`;
         }
