@@ -21,8 +21,8 @@
     "",
     ""
   ],
-  "nickNameBot": "ᘜ卂ㄥ卂乂ㄚ 𝗔𝗜 V1 🌠",
-  "prefix": "/",
+  "nickNameBot": "ᘜ卂ㄥ卂乂ㄚ 𝗔𝗜 V3 🌠",
+  "prefix": "$",
   "database": {
     "type": "sqlite",
     "uriMongodb": "",
