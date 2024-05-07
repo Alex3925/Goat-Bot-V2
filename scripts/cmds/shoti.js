@@ -19,10 +19,12 @@ module.exports = {
 			usages: "[]"
 		},
 		en: {
-			usages: "[]"
-		}
-	},
-
+      usages: "[]",
+      downloading: "Downloading...",
+      downloaded_successfully: "Downloaded successfully! Video of @{username} ({userNickname}) with duration {duration} seconds."
+    }
+  },
+			
 	onStart: async function ({ api, event, args, getLang }) {
 		api.setMessageReaction("⏳", event.messageID, () => {}, true);
 		api.sendTypingIndicator(event.threadID, true);
