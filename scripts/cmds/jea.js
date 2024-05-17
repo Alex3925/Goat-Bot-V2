@@ -1,29 +1,27 @@
 const axios = require('axios');
 
-this.config = {
-  name: 'jea',
-  version: '1.0',
-  author: {
-    name: '',
-    contacts: 'https://liaspark.chatbotcommunity.ltd/profile@lanceajiro'
-  },
-  role: 0,
-  category: 'Ai-Chat',
-  shortDescription: `Your ai personal girlfriend`,
-  longDescription: `Your ai personal girlfriend`,
-  guide: '{pn}jea-mean [query]'
-};
-
-this.onStart = async function({ api }) {
-  // Do nothing for now
-};
-
 module.exports = {
-  config: this.config,
-  onStart: this.onStart,
-  start: async function({ api, event, args }) {
+  config: {
+    name: 'jea-mean2',
+    version: '1.0',
+    author: 'Alex',
+    role: 0,
+    category: 'Ai-Chat',
+    shortDescription: {
+      en: `Your ai personal girlfriend`
+    },
+    longDescription: {
+      en: `Your ai personal girlfriend`
+    },
+    guide: {
+      en: '{pn}jea-mean2 [query]'
+    },
+  },
+
+  onStart: async function ({ api, event, args, usersData }) {
     try {
       const query = args.join(" ") || "hello";
+      const { name } = (await usersData.get(event.senderID));
 
       if (query) {
         api.setMessageReaction("⏳", event.messageID, (err) => console.log(err), true);
@@ -32,7 +30,7 @@ module.exports = {
           event.threadID
         );
 
-        const apiUrl = `https://liaspark.chatbotcommunity.ltd/@lanceajiro/api/jea-mean?key=j86bwkwo-8hako-12C&query=${encodeURIComponent(query)}`;
+        const apiUrl = `https://liaspark.chatbotcommunity.ltd/@unregistered/api/jea-mean2?key=j86bwkwo-8hako-12C&userName=${encodeURIComponent(name || "a user")}&query=${encodeURIComponent(query)}`;
         const response = await axios.get(apiUrl);
 
         if (response.data && response.data.message) {
