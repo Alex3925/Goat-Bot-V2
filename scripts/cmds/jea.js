@@ -14,8 +14,13 @@ this.config = {
   guide: '{pn}jea-mean [query]'
 };
 
+this.onStart = async function({ api }) {
+  // Do nothing for now
+};
+
 module.exports = {
   config: this.config,
+  onStart: this.onStart,
   start: async function({ api, event, args }) {
     try {
       const query = args.join(" ") || "hello";
