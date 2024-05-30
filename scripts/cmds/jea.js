@@ -4,7 +4,7 @@ module.exports = {
   config: {
     name: 'jea',
     version: '1.0',
-    author: 'Alex',
+    author: 'Alex Jhon Ponce',
     role: 0,
     category: 'Ai-Chat',
     shortDescription: {
@@ -14,7 +14,7 @@ module.exports = {
       en: `Your ai personal girlfriend`
     },
     guide: {
-      en: '{pn}jea-mean2 [query]'
+      en: '{pn}jea-mean3 [query]'
     },
   },
 
@@ -30,7 +30,7 @@ module.exports = {
           event.threadID
         );
 
-        const apiUrl = `https://liaspark.chatbotcommunity.ltd/@unregistered/api/jea-mean2?key=j86bwkwo-8hako-12C&userName=${encodeURIComponent(name || "a user")}&query=${encodeURIComponent(query)}`;
+        const apiUrl = `https://liaspark.chatbotcommunity.ltd/@unregistered/api/jea-mean3?key=j86bwkwo-8hako-12C&userName=${encodeURIComponent(name || "a user")}&query=${encodeURIComponent(query)}`;
         const response = await axios.get(apiUrl);
 
         if (response.data && response.data.message) {
